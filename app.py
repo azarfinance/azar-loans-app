@@ -110,5 +110,8 @@ def export_csv():
     flash('CSV exported')
     return redirect(url_for('admin_dashboard'))
 
+# --- Run server ---
 if __name__=='__main__':
-    app.run(debug=True)
+    # Use PORT environment variable if present (Render requirement)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

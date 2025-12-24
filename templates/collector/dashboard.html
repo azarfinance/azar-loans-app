@@ -1,43 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Collector Dashboard</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <header>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </header>
     <h2>Collector Dashboard</h2>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul style="color:green;">
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
 
-    <h3>Loans</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>ID</th>
-            <th>Client</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        {% for loan in loans %}
-        <tr>
-            <td>{{ loan.id }}</td>
-            <td>{{ loan.client }}</td>
-            <td>{{ loan.amount }}</td>
-            <td>{{ loan.status }}</td>
-            <td>
-                <form style="display:inline;" method="post" action="/collect_loan/{{loan.id}}">
-                    <button type="submit">Collect</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <section>
+        <h3>Loans to Collect</h3>
+        <table>
+            <tr>
+                <th>ID</th><th>Client</th><th>Amount</th><th>Status</th><th>Action</th>
+            </tr>
+            {% for loan in loans %}
+            {% if loan.status=='approved' %}
+            <tr>
+                <td>{{ loan.id }}</td>
+                <td>{{ loan.client }}</td>
+                <td>{{ loan.amount }}</td>
+                <td>{{ loan.status }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('collect_loan', id=loan.id) }}">
+                        <button type="submit">Collect</button>
+                    </form>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </section>
 </body>
 </html>

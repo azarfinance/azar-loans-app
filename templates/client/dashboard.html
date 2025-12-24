@@ -1,45 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Client Dashboard</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <header>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </header>
     <h2>Client Dashboard</h2>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul style="color:green;">
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
 
-    <h3>Your Loans</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>ID</th>
-            <th>Amount</th>
-            <th>Interest</th>
-            <th>Penalty</th>
-            <th>Status</th>
-        </tr>
-        {% for loan in loans %}
-        <tr>
-            <td>{{ loan.id }}</td>
-            <td>{{ loan.amount }}</td>
-            <td>{{ loan.interest }}</td>
-            <td>{{ loan.penalty }}</td>
-            <td>{{ loan.status }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <section>
+        <h3>Request Loan (USSD Placeholder)</h3>
+        <form method="POST" action="{{ url_for('ussd_request') }}">
+            Amount: <input type="number" name="amount" step="0.01" required>
+            <button type="submit">Request Loan</button>
+        </form>
+    </section>
 
-    <h3>Request Loan (USSD Simulation)</h3>
-    <form method="post" action="/ussd_request">
-        <input name="amount" type="number" placeholder="Amount" required>
-        <button type="submit">Request Loan</button>
-    </form>
+    <section>
+        <h3>Your Loans</h3>
+        <table>
+            <tr>
+                <th>ID</th><th>Amount</th><th>Interest</th><th>Penalty</th><th>Date</th><th>Status</th>
+            </tr>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.id }}</td>
+                <td>{{ loan.amount }}</td>
+                <td>{{ loan.interest }}</td>
+                <td>{{ loan.penalty }}</td>
+                <td>{{ loan.date }}</td>
+                <td>{{ loan.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
 </body>
 </html>

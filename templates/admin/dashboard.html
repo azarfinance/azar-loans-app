@@ -1,51 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <header>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
+        <img src="{{ url_for('static', filename='images/banner.png') }}" alt="Banner" class="banner">
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </header>
     <h2>Admin Dashboard</h2>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul style="color:green;">
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
 
-    <h3>Loans</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>ID</th>
-            <th>Client</th>
-            <th>Amount</th>
-            <th>Interest</th>
-            <th>Penalty</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        {% for loan in loans %}
-        <tr>
-            <td>{{ loan.id }}</td>
-            <td>{{ loan.client }}</td>
-            <td>{{ loan.amount }}</td>
-            <td>{{ loan.interest }}</td>
-            <td>{{ loan.penalty }}</td>
-            <td>{{ loan.status }}</td>
-            <td>
-                <form style="display:inline;" method="post" action="/approve_loan/{{loan.id}}">
-                    <input type="password" name="pin" placeholder="Admin PIN" required>
-                    <button type="submit">Approve</button>
-                </form>
-                <a href="/send_whatsapp/{{loan.id}}">Send WhatsApp</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="/export_csv">Export CSV</a>
+    <section>
+        <h3>Create Loan</h3>
+        <form method="POST" action="{{ url_for('create_loan') }}">
+            Client: <input type="text" name="client" required>
+            Amount: <input type="number" name="amount" step="0.01" required>
+            <button type="submit">Create Loan</button>
+        </form>
+    </section>
+
+    <section>
+        <h3>Loans</h3>
+        <table>
+            <tr>
+                <th>ID</th><th>Client</th><th>Amount</th><th>Interest</th><th>Penalty</th><th>Date</th><th>Status</th><th>Actions</th>
+            </tr>
+            {% for loan in loans %}
+            <tr>
+                <td>{{ loan.id }}</td>
+                <td>{{ loan.client }}</td>
+                <td>{{ loan.amount }}</td>
+                <td>{{ loan.interest }}</td>
+                <td>{{ loan.penalty }}</td>
+                <td>{{ loan.date }}</td>
+                <td>{{ loan.status }}</td>
+                <td>
+                    {% if loan.status=='pending' %}
+                    <form style="display:inline;" method="POST" action="{{ url_for('approve_loan', id=loan.id) }}">
+                        <input type="password" name="pin" placeholder="Admin PIN" required>
+                        <button type="submit">Approve</button>
+                    </form>
+                    {% endif %}
+                    <form style="display:inline;" method="GET" action="{{ url_for('send_whatsapp', id=loan.id) }}">
+                        <button type="submit">Send Reminder</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <form method="GET" action="{{ url_for('export_csv') }}">
+            <button type="submit">Export CSV</button>
+        </form>
+    </section>
 </body>
 </html>

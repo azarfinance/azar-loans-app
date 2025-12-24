@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul style="color:green;">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h3>Loans</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>Amount</th>
+            <th>Interest</th>
+            <th>Penalty</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for loan in loans %}
+        <tr>
+            <td>{{ loan.id }}</td>
+            <td>{{ loan.client }}</td>
+            <td>{{ loan.amount }}</td>
+            <td>{{ loan.interest }}</td>
+            <td>{{ loan.penalty }}</td>
+            <td>{{ loan.status }}</td>
+            <td>
+                <form style="display:inline;" method="post" action="/approve_loan/{{loan.id}}">
+                    <input type="password" name="pin" placeholder="Admin PIN" required>
+                    <button type="submit">Approve</button>
+                </form>
+                <a href="/send_whatsapp/{{loan.id}}">Send WhatsApp</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/export_csv">Export CSV</a>
+</body>
+</html>

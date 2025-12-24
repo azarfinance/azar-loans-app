@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Client Dashboard</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <h2>Client Dashboard</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul style="color:green;">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <h3>Your Loans</h3>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>ID</th>
+            <th>Amount</th>
+            <th>Interest</th>
+            <th>Penalty</th>
+            <th>Status</th>
+        </tr>
+        {% for loan in loans %}
+        <tr>
+            <td>{{ loan.id }}</td>
+            <td>{{ loan.amount }}</td>
+            <td>{{ loan.interest }}</td>
+            <td>{{ loan.penalty }}</td>
+            <td>{{ loan.status }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Request Loan (USSD Simulation)</h3>
+    <form method="post" action="/ussd_request">
+        <input name="amount" type="number" placeholder="Amount" required>
+        <button type="submit">Request Loan</button>
+    </form>
+</body>
+</html>
